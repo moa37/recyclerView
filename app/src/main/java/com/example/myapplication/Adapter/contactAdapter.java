@@ -21,8 +21,17 @@ import java.util.ArrayList;
 
 public class contactAdapter extends RecyclerView.Adapter<contactAdapter.holder> {
     Context context;
-    private ArrayList<contacts> contactArray;
+    public static ArrayList<contacts> contactArray=new ArrayList<>();
+   public OnContactClicked onContactClicked;
+
+    public contactAdapter(OnContactClicked onContactClicked) {
+        this.onContactClicked = onContactClicked;
+    }
+
     private final ViewBinderHelper viewBinderHelper = new ViewBinderHelper();
+    public interface OnContactClicked{
+         void onContact(contacts contact,int position);
+    }
 
     public contactAdapter(Context context,ArrayList<contacts> contactArray) {
         this.contactArray = contactArray;
@@ -38,7 +47,7 @@ public class contactAdapter extends RecyclerView.Adapter<contactAdapter.holder> 
     }
 
     @Override
-    public void onBindViewHolder(@NonNull holder holder, int position) {
+    public void onBindViewHolder(@NonNull holder holder, final int position) {
         final contacts contacts = contactArray.get(position);
         holder.name.setText(contacts.getContacts());
         holder.number.setText(contacts.getNumber());
@@ -54,8 +63,18 @@ public class contactAdapter extends RecyclerView.Adapter<contactAdapter.holder> 
             }
         });
 
+        holder.edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onContactClicked.onContact(contacts,position);
+
+            }
+        });
+
+
 
     }
+
 
     @Override
     public int getItemCount() {
@@ -64,7 +83,7 @@ public class contactAdapter extends RecyclerView.Adapter<contactAdapter.holder> 
 
     class holder extends RecyclerView.ViewHolder{
         TextView name,number;
-        ImageView imageV,delete;
+        ImageView imageV,delete,edit;
         SwipeRevealLayout swipeLayout;
         public holder(@NonNull View itemView) {
             super(itemView);
@@ -73,6 +92,7 @@ public class contactAdapter extends RecyclerView.Adapter<contactAdapter.holder> 
             imageV=itemView.findViewById(R.id.imageV);
             delete=itemView.findViewById(R.id.del);
             swipeLayout=itemView.findViewById(R.id.swipeL);
+            edit=itemView.findViewById(R.id.edit);
 
         }
     }

@@ -1,10 +1,12 @@
 package com.example.myapplication.model;
 
-public class contacts {
+import java.io.Serializable;
+
+public class contacts implements Serializable {
    private String contacts;
    private String  number;
 
-    public contacts(String contacts, String number) {
+    public contacts(String contacts, String number)  {
         this.contacts = contacts;
         this.number = number;
     }

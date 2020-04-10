@@ -2,59 +2,79 @@ package com.example.myapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.myapplication.Adapter.contactAdapter;
+import com.example.myapplication.model.contacts;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.io.Serializable;
+
 public class addActivity extends AppCompatActivity {
-    TextInputLayout name,number;
+    EditText name,number;
     Button add;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
 
+        initComp();
+
+        if(getIntent().hasExtra("contact")){
+            contacts contact = (contacts) getIntent().getSerializableExtra("contact");
+            name.setText(contact.getContacts());
+            number.setText(contact.getNumber());
+
+        }
+
+
+
+
+    }
+
+    void initComp(){
+
         add=findViewById(R.id.button);
-        name=findViewById(R.id.nameET);
-        number=findViewById(R.id.numberET);
-        final EditText EditNumber = number.getEditText();
-        final EditText Editname=name.getEditText();
+        name=findViewById(R.id.ename);
+        number=findViewById(R.id.enumber);
 
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                assert Editname != null;
-                if(TextUtils.isEmpty(Editname.getText().toString())){
-                    Editname.setError("This field is required");
-
+                    contacts contact=createContact(name.getText().toString(),number.getText().toString());
+                    if (contact != null) {
+                        Intent intent = new Intent();
+                        intent.putExtra("contact", contact);
+                        intent.putExtra("post",getIntent().getIntExtra("pos",0));
+                        setResult(Activity.RESULT_OK, intent);
+                        finish();}
                 }
-                assert EditNumber != null;
-                if(TextUtils.isEmpty(EditNumber.getText().toString())){
-                    EditNumber.setError("This field is required");
-                }if(!TextUtils.isEmpty(EditNumber.getText().toString())&&!TextUtils.isEmpty(Editname.getText().toString())){
-                    Intent intent=new Intent();
-                    intent.putExtra("name",Editname.getText().toString());
-                    intent.putExtra("number",EditNumber.getText().toString());
-                    setResult(101,intent);
-                    finish();
-                }
-
             }
-
-        });
-
-
+        );
+    }contacts createContact(String Sname,String Snumber){
+        boolean invalid = false;
+        if (Sname == null || Sname.isEmpty()) {
+            invalid = true;
+            name.setError("لا يمكن إضافة مستخدم بدون اسم");
+        }
+        if (Snumber == null || Snumber.isEmpty()) {
+            invalid = true;
+            number.setError("لا يمكن إضافة مستخدم بدون رقم ");
+        }
+        if (invalid) return null;
+        else return new contacts(Sname, Snumber);
     }
 
 }
