@@ -2,6 +2,7 @@ package com.example.myapplication.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.Toast;
 
 import com.chauthai.swipereveallayout.SwipeRevealLayout;
 import com.chauthai.swipereveallayout.ViewBinderHelper;
+import com.example.myapplication.MainActivity;
 import com.example.myapplication.model.contacts;
 
 import androidx.annotation.NonNull;
@@ -27,7 +29,7 @@ public class contactAdapter extends ListAdapter<contacts,contactAdapter.holder> 
     Context context;
     public static List<contacts> contactArray=new ArrayList<>();
    public OnContactClicked onContactClicked;
-
+    public OnDeleteContact deleteContact;
 
 
     private final ViewBinderHelper viewBinderHelper = new ViewBinderHelper();
@@ -44,13 +46,18 @@ public class contactAdapter extends ListAdapter<contacts,contactAdapter.holder> 
         }
     };
 
-    public contactAdapter(OnContactClicked onContactClicked) {
+    public contactAdapter(OnContactClicked onContactClicked,OnDeleteContact deleteContact) {
         super(diffCallback);
         this.onContactClicked=onContactClicked;
+        this.deleteContact=deleteContact;
     }
 
     public interface OnContactClicked{
          void onContact(contacts contact,int position);
+    }
+
+    public interface OnDeleteContact{
+      void OnDelete(contacts contact);
     }
 
 
@@ -63,7 +70,7 @@ public class contactAdapter extends ListAdapter<contacts,contactAdapter.holder> 
 
     @Override
     public void onBindViewHolder(@NonNull holder holder, final int position) {
-        holder.name.setText(getItem(position).getContacts());
+        holder.name.setText(getItem(position).getContacts()+"  "+position);
         holder.number.setText(getItem(position).getNumber());
 //        viewBinderHelper.setOpenOnlyOne(true);
 //        if(contactArray!=null) {
@@ -73,8 +80,7 @@ public class contactAdapter extends ListAdapter<contacts,contactAdapter.holder> 
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ArrayList<contacts> newList=new ArrayList<>(contactArray);
-
+                deleteContact.OnDelete(getItem(position));
 
             }
         });

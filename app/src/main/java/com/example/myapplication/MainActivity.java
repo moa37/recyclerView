@@ -10,6 +10,9 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.example.myapplication.Adapter.contactAdapter;
+import com.example.myapplication.Repository.AddContactRepository;
+import com.example.myapplication.Repository.DeleteContactRepository;
+import com.example.myapplication.Repository.contactReopsitory;
 import com.example.myapplication.db.AppDatabase;
 import com.example.myapplication.model.contacts;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -33,8 +36,22 @@ public class MainActivity extends AppCompatActivity {
 
         }
     };
-    contactAdapter adapter=new contactAdapter(onContactClicked);
 
+    contactAdapter.OnDeleteContact deleteContact=new contactAdapter.OnDeleteContact() {
+        @Override
+        public void OnDelete(contacts contact) {
+            DeleteContactRepository del=new DeleteContactRepository(db,callback);
+            del.execute(contact);
+        }
+    };
+
+    contactAdapter adapter=new contactAdapter(onContactClicked,deleteContact);
+  contactReopsitory.contactCallback callback=  new contactReopsitory.contactCallback() {
+        @Override
+        public void callBack(List<contacts> contactsList) {
+            adapter.submitList(contactsList);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,14 +59,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         db=AppDatabase.getInstance(this);
-       db.appDao().insertall(new contacts("moatasem","012"));
-        List<contacts> dbContacts = db.appDao().getallcontacts();
-        adapter.submitList(dbContacts);
+        contactReopsitory repo=new contactReopsitory(db,callback );
+        repo.execute();
 
-
-        list=new ArrayList<>();
-        contactAdapter.contactArray=list;
-
+//       db.appDao().insertall(new contacts("moatasem","012"));
+//        List<contacts> dbContacts = db.appDao().getallcontacts();
+  //      adapter.submitList(dbContacts);
 
 
         FloatingActionButton fab =findViewById(R.id.fab);
@@ -74,10 +89,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode==1&& resultCode==Activity.RESULT_OK){
-            db.appDao().insertall((contacts) data.getSerializableExtra("contact"));
-            List<contacts> dbContacts=db.appDao().getallcontacts();
-            adapter.submitList(dbContacts);
-        }if(requestCode==2&&resultCode==Activity.RESULT_OK){]
+            AddContactRepository addCon=new AddContactRepository(db,callback);
+            addCon.execute((contacts) data.getSerializableExtra("contact"));
+//            db.appDao().insertall((contacts) data.getSerializableExtra("contact"));
+//            List<contacts> dbContacts=db.appDao().getallcontacts();
+//            adapter.submitList(dbContacts);
+        }if(requestCode==2&&resultCode==Activity.RESULT_OK){
+
+
 
 
             list.set(data.getIntExtra("post",0), (contacts) data.getSerializableExtra("contact"));
@@ -86,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
+
 
 
 }
