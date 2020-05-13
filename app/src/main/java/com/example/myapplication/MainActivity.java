@@ -6,21 +6,20 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import com.example.myapplication.Adapter.contactAdapter;
+import com.example.myapplication.db.AppDatabase;
 import com.example.myapplication.model.contacts;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.prefs.Preferences;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     ArrayList<contacts> list;
+    AppDatabase db;
     final int REQUEST_CODE=1;
     final int EDIT_CODE=2;
     contactAdapter.OnContactClicked onContactClicked = new contactAdapter.OnContactClicked() {
@@ -42,6 +41,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        db=AppDatabase.getInstance(this);
+       db.appDao().insertall(new contacts("moatasem","012"));
+        List<contacts> dbContacts = db.appDao().getallcontacts();
+        adapter.submitList(dbContacts);
+
 
         list=new ArrayList<>();
         contactAdapter.contactArray=list;
@@ -61,18 +65,24 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView rec=findViewById(R.id.rec);
         rec.setAdapter(adapter);
 
+
+
+
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode==1&& resultCode==Activity.RESULT_OK){
-            list.add((contacts) data.getSerializableExtra("contact"));
-            adapter.notifyDataSetChanged();
-        }if(requestCode==2&&resultCode==Activity.RESULT_OK){
-            list.set(data.getIntExtra("post",0), (contacts) data.getSerializableExtra("contact"));
-            adapter.notifyDataSetChanged();
+            db.appDao().insertall((contacts) data.getSerializableExtra("contact"));
+            List<contacts> dbContacts=db.appDao().getallcontacts();
+            adapter.submitList(dbContacts);
+        }if(requestCode==2&&resultCode==Activity.RESULT_OK){]
 
+
+            list.set(data.getIntExtra("post",0), (contacts) data.getSerializableExtra("contact"));
+            ArrayList arrayList=new ArrayList<>(list);
+            adapter.submitList(arrayList);
 
         }
     }

@@ -1,6 +1,7 @@
 package com.example.myapplication.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,31 +14,45 @@ import com.chauthai.swipereveallayout.ViewBinderHelper;
 import com.example.myapplication.model.contacts;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class contactAdapter extends RecyclerView.Adapter<contactAdapter.holder> {
+public class contactAdapter extends ListAdapter<contacts,contactAdapter.holder> {
     Context context;
-    public static ArrayList<contacts> contactArray=new ArrayList<>();
+    public static List<contacts> contactArray=new ArrayList<>();
    public OnContactClicked onContactClicked;
 
-    public contactAdapter(OnContactClicked onContactClicked) {
-        this.onContactClicked = onContactClicked;
-    }
+
 
     private final ViewBinderHelper viewBinderHelper = new ViewBinderHelper();
+
+    static DiffUtil.ItemCallback<contacts> diffCallback=new DiffUtil.ItemCallback<contacts>() {
+        @Override
+        public boolean areItemsTheSame(@NonNull contacts oldItem, @NonNull contacts newItem) {
+            return oldItem.getNumber().equals(newItem.getNumber());
+        }
+
+        @Override
+        public boolean areContentsTheSame(@NonNull contacts oldItem, @NonNull contacts newItem) {
+            return oldItem.getContacts().equals(newItem.getContacts());
+        }
+    };
+
+    public contactAdapter(OnContactClicked onContactClicked) {
+        super(diffCallback);
+        this.onContactClicked=onContactClicked;
+    }
+
     public interface OnContactClicked{
          void onContact(contacts contact,int position);
     }
 
-    public contactAdapter(Context context,ArrayList<contacts> contactArray) {
-        this.contactArray = contactArray;
-        this.context=context;
-        notifyDataSetChanged();
-    }
 
     @NonNull
     @Override
@@ -48,25 +63,28 @@ public class contactAdapter extends RecyclerView.Adapter<contactAdapter.holder> 
 
     @Override
     public void onBindViewHolder(@NonNull holder holder, final int position) {
-        final contacts contacts = contactArray.get(position);
-        holder.name.setText(contacts.getContacts());
-        holder.number.setText(contacts.getNumber());
-        viewBinderHelper.setOpenOnlyOne(true);
-        viewBinderHelper.bind(holder.swipeLayout,String.valueOf(contactArray.get(position)));
-        viewBinderHelper.closeLayout(String.valueOf(contactArray.get(position)));
-
+        holder.name.setText(getItem(position).getContacts());
+        holder.number.setText(getItem(position).getNumber());
+//        viewBinderHelper.setOpenOnlyOne(true);
+//        if(contactArray!=null) {
+//            viewBinderHelper.bind(holder.swipeLayout, String.valueOf(contactArray.get(position)));
+//            viewBinderHelper.closeLayout(String.valueOf(contactArray.get(position)));
+//        }
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                contactArray.remove(contacts);
-                notifyDataSetChanged();
+                ArrayList<contacts> newList=new ArrayList<>(contactArray);
+
+
             }
         });
-
+        final Intent intent =new Intent();
         holder.edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onContactClicked.onContact(contacts,position);
+                onContactClicked.onContact(getItem(position),position);
+                intent.putExtra("id",getItem(position).getId());
+
 
             }
         });
@@ -75,11 +93,6 @@ public class contactAdapter extends RecyclerView.Adapter<contactAdapter.holder> 
 
     }
 
-
-    @Override
-    public int getItemCount() {
-        return contactArray!=null?contactArray.size():0;
-    }
 
     class holder extends RecyclerView.ViewHolder{
         TextView name,number;

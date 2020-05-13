@@ -57,9 +57,10 @@ public class addActivity extends AppCompatActivity {
                     if (contact != null) {
                         Intent intent = new Intent();
                         intent.putExtra("contact", contact);
-                        intent.putExtra("post",getIntent().getIntExtra("pos",0));
+                        intent.putExtra("mid",getIntent().getIntExtra("id",0));
                         setResult(Activity.RESULT_OK, intent);
-                        finish();}
+                        finish();
+                    }
                 }
             }
         );
