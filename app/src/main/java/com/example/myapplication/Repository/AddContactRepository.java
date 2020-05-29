@@ -9,8 +9,8 @@ import java.util.List;
 
 public class AddContactRepository extends AsyncTask<contacts,Void , List<contacts>> {
     AppDatabase db;
-    private contactReopsitory.contactCallback callback;
-    public AddContactRepository(AppDatabase db, contactReopsitory.contactCallback callback) {
+    private contactRepository.contactCallback callback;
+    public AddContactRepository(AppDatabase db, contactRepository.contactCallback callback) {
         this.db = db;
         this.callback=callback;
     }

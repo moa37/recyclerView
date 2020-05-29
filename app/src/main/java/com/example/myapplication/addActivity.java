@@ -17,7 +17,7 @@ import android.widget.Toast;
 
 import com.example.myapplication.Adapter.contactAdapter;
 import com.example.myapplication.Repository.AddContactRepository;
-import com.example.myapplication.Repository.contactReopsitory;
+//import com.example.myapplication.Repository.contactReopsitory;
 import com.example.myapplication.db.AppDatabase;
 import com.example.myapplication.model.contacts;
 import com.google.android.material.textfield.TextInputEditText;
@@ -29,6 +29,8 @@ import java.util.List;
 public class addActivity extends AppCompatActivity {
     EditText name,number;
     Button add;
+    boolean i=false;
+    contacts cont;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,9 +39,10 @@ public class addActivity extends AppCompatActivity {
         initComp();
 
         if(getIntent().hasExtra("contact")){
-            contacts contact = (contacts) getIntent().getSerializableExtra("contact");
-            name.setText(contact.getContacts());
-            number.setText(contact.getNumber());
+            i=true;
+             cont = (contacts) getIntent().getSerializableExtra("contact");
+            name.setText(cont.getContacts());
+            number.setText(cont.getNumber());
 
         }
 
@@ -60,8 +63,7 @@ public class addActivity extends AppCompatActivity {
                     contacts contact=createContact(name.getText().toString(),number.getText().toString());
                     if (contact != null) {
                         Intent intent = new Intent();
-                        intent.putExtra("contact", contact);
-                        intent.putExtra("mid",getIntent().getIntExtra("id",0));
+                        intent.putExtra("cont", contact);
                         setResult(Activity.RESULT_OK, intent);
                         finish();
                     }
@@ -77,8 +79,15 @@ public class addActivity extends AppCompatActivity {
         if (Snumber == null || Snumber.isEmpty()) {
             invalid = true;
             number.setError("لا يمكن إضافة مستخدم بدون رقم ");
+
+
         }
         if (invalid) return null;
+        else if(i){
+            cont.setNumber(Snumber);
+            cont.setContacts(Sname);
+            return cont;
+        }
         else return new contacts(Sname, Snumber);
     }
 

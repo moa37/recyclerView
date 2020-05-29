@@ -10,8 +10,11 @@ import com.example.myapplication.model.contacts;
 
 @Database(entities = {contacts.class} , version = 1)
 public abstract class AppDatabase extends RoomDatabase {
+
     public abstract AppDao appDao();
+
     public static volatile AppDatabase INSTANCE;
+
     public static AppDatabase getInstance(Context context){
         if(INSTANCE==null){
             synchronized (AppDatabase.class){

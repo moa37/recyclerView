@@ -8,11 +8,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.myapplication.Adapter.contactAdapter;
 import com.example.myapplication.Repository.AddContactRepository;
 import com.example.myapplication.Repository.DeleteContactRepository;
-import com.example.myapplication.Repository.contactReopsitory;
+import com.example.myapplication.Repository.UpdateRepository;
+import com.example.myapplication.Repository.contactRepository;
 import com.example.myapplication.db.AppDatabase;
 import com.example.myapplication.model.contacts;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -25,13 +27,18 @@ public class MainActivity extends AppCompatActivity {
     AppDatabase db;
     final int REQUEST_CODE=1;
     final int EDIT_CODE=2;
+    int pos;
+
     contactAdapter.OnContactClicked onContactClicked = new contactAdapter.OnContactClicked() {
         @Override
         public void onContact(contacts contact, int position) {
             Intent intent = new Intent(MainActivity.this, addActivity.class);
-            intent.putExtra("pos", position);
+            intent.putExtra("pos",position);
             intent.putExtra("contact", contact);
             startActivityForResult(intent, EDIT_CODE);
+
+
+            pos=position;
 
 
         }
@@ -46,12 +53,16 @@ public class MainActivity extends AppCompatActivity {
     };
 
     contactAdapter adapter=new contactAdapter(onContactClicked,deleteContact);
-  contactReopsitory.contactCallback callback=  new contactReopsitory.contactCallback() {
+  contactRepository.contactCallback callback=  new contactRepository.contactCallback() {
         @Override
         public void callBack(List<contacts> contactsList) {
-            adapter.submitList(contactsList);
-        }
+            list=new ArrayList<>(contactsList);
+            adapter.submitList(list);
+            contactAdapter.contactArray=list;        }
     };
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,12 +70,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         db=AppDatabase.getInstance(this);
-        contactReopsitory repo=new contactReopsitory(db,callback );
+        contactRepository repo=new contactRepository(db,callback );
         repo.execute();
-
-//       db.appDao().insertall(new contacts("moatasem","012"));
-//        List<contacts> dbContacts = db.appDao().getallcontacts();
-  //      adapter.submitList(dbContacts);
 
 
         FloatingActionButton fab =findViewById(R.id.fab);
@@ -74,14 +81,8 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(new Intent(MainActivity.this,addActivity.class),REQUEST_CODE);
             }
         });
-
-
-
         RecyclerView rec=findViewById(R.id.rec);
         rec.setAdapter(adapter);
-
-
-
 
     }
 
@@ -90,18 +91,20 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode==1&& resultCode==Activity.RESULT_OK){
             AddContactRepository addCon=new AddContactRepository(db,callback);
-            addCon.execute((contacts) data.getSerializableExtra("contact"));
-//            db.appDao().insertall((contacts) data.getSerializableExtra("contact"));
-//            List<contacts> dbContacts=db.appDao().getallcontacts();
-//            adapter.submitList(dbContacts);
+            addCon.execute((contacts) data.getSerializableExtra("cont"));
         }if(requestCode==2&&resultCode==Activity.RESULT_OK){
 
-
-
-
-            list.set(data.getIntExtra("post",0), (contacts) data.getSerializableExtra("contact"));
-            ArrayList arrayList=new ArrayList<>(list);
-            adapter.submitList(arrayList);
+            final contacts cont=(contacts) data.getSerializableExtra("cont");
+            UpdateRepository.UpdateCallback updateCallB=new UpdateRepository.UpdateCallback() {
+                @Override
+                public void updateCallBack(List<contacts> contactsList) {
+                     list=new ArrayList<>(contactsList);
+                     list.set(pos,cont);
+                     adapter.submitList(list);
+                }
+            };
+            UpdateRepository updateR=new UpdateRepository(db,updateCallB);
+            updateR.execute(cont);
 
         }
     }

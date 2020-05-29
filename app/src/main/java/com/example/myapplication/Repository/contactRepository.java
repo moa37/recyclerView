@@ -7,11 +7,11 @@ import com.example.myapplication.model.contacts;
 
 import java.util.List;
 
-public class contactReopsitory extends AsyncTask<Void,Void, List<contacts>> {
+public class contactRepository extends AsyncTask<Void,Void, List<contacts>> {
     AppDatabase db;
    private contactCallback callback;
 
-    public contactReopsitory(AppDatabase db ,contactCallback callback) {
+    public contactRepository(AppDatabase db , contactCallback callback) {
         this.db = db;
         this.callback=callback;
     }

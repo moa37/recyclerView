@@ -9,9 +9,9 @@ import java.util.List;
 
 public class DeleteContactRepository extends AsyncTask<contacts,Void, List<contacts>> {
     AppDatabase db;
-    private contactReopsitory.contactCallback callback;
+    private contactRepository.contactCallback callback;
 
-    public DeleteContactRepository(AppDatabase db,contactReopsitory.contactCallback callback) {
+    public DeleteContactRepository(AppDatabase db, contactRepository.contactCallback callback) {
         this.db = db;
         this.callback=callback;
     }
