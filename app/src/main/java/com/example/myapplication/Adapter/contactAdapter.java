@@ -21,14 +21,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
 
-import java.util.ArrayList;
+
 import java.util.List;
 
 public class contactAdapter extends ListAdapter<contacts,contactAdapter.holder> {
-    public static List<contacts> contactArray=new ArrayList<>();
    public OnContactClicked onContactClicked;
     public OnDeleteContact deleteContact;
 
+    private final ViewBinderHelper viewBinderHelper = new ViewBinderHelper();
 
     static DiffUtil.ItemCallback<contacts> diffCallback=new DiffUtil.ItemCallback<contacts>() {
         @Override
@@ -68,14 +68,24 @@ public class contactAdapter extends ListAdapter<contacts,contactAdapter.holder> 
     public void onBindViewHolder(@NonNull holder holder, final int position) {
         holder.name.setText(getItem(position).getContacts()+"  "+position);
         holder.number.setText(getItem(position).getNumber());
+
+        //delete button
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 deleteContact.OnDelete(getItem(position));
 
+
             }
         });
 
+
+        //swipe layout
+        viewBinderHelper.bind(holder.swipeLayout, String.valueOf(getItem(position).getId()));
+        viewBinderHelper.closeLayout(String.valueOf(getItem(position)));
+        viewBinderHelper.setOpenOnlyOne(true);
+
+        //edit button
         holder.edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

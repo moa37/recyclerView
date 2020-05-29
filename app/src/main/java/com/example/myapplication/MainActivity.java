@@ -37,13 +37,13 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("contact", contact);
             startActivityForResult(intent, EDIT_CODE);
 
-
             pos=position;
 
 
         }
     };
 
+    //delete data
     contactAdapter.OnDeleteContact deleteContact=new contactAdapter.OnDeleteContact() {
         @Override
         public void OnDelete(contacts contact) {
@@ -52,13 +52,15 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+
+
     contactAdapter adapter=new contactAdapter(onContactClicked,deleteContact);
   contactRepository.contactCallback callback=  new contactRepository.contactCallback() {
         @Override
         public void callBack(List<contacts> contactsList) {
             list=new ArrayList<>(contactsList);
             adapter.submitList(list);
-            contactAdapter.contactArray=list;        }
+                  }
     };
 
 
@@ -90,10 +92,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode==1&& resultCode==Activity.RESULT_OK){
+
+            //insert data
             AddContactRepository addCon=new AddContactRepository(db,callback);
             addCon.execute((contacts) data.getSerializableExtra("cont"));
+
         }if(requestCode==2&&resultCode==Activity.RESULT_OK){
 
+          //update data
             final contacts cont=(contacts) data.getSerializableExtra("cont");
             UpdateRepository.UpdateCallback updateCallB=new UpdateRepository.UpdateCallback() {
                 @Override
