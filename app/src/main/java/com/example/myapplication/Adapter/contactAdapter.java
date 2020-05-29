@@ -1,7 +1,6 @@
 package com.example.myapplication.Adapter;
 
-import android.content.Context;
-import android.content.Intent;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,11 +9,11 @@ import android.widget.TextView;
 
 import com.chauthai.swipereveallayout.SwipeRevealLayout;
 import com.chauthai.swipereveallayout.ViewBinderHelper;
-import com.example.myapplication.Repository.UpdateRepository;
+
 import com.example.myapplication.model.contacts;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,7 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.myapplication.R;
 
 
-import java.util.List;
+
 
 public class contactAdapter extends ListAdapter<contacts,contactAdapter.holder> {
    public OnContactClicked onContactClicked;
@@ -66,42 +65,10 @@ public class contactAdapter extends ListAdapter<contacts,contactAdapter.holder> 
 
     @Override
     public void onBindViewHolder(@NonNull holder holder, final int position) {
-        holder.name.setText(getItem(position).getContacts()+"  "+position);
-        holder.number.setText(getItem(position).getNumber());
-
-        //delete button
-        holder.delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                deleteContact.OnDelete(getItem(position));
-
-
-            }
-        });
-
-
-        //swipe layout
-        viewBinderHelper.bind(holder.swipeLayout, String.valueOf(getItem(position).getId()));
-        viewBinderHelper.closeLayout(String.valueOf(getItem(position)));
-        viewBinderHelper.setOpenOnlyOne(true);
-
-        //edit button
-        holder.edit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onContactClicked.onContact(getItem(position),position);
-
-            }
-        });
-
-
-
+        holder.onbind(position);
     }
 
-    @Override
-    public void submitList(@Nullable List<contacts> list) {
-        super.submitList(list);
-    }
+
 
     class holder extends RecyclerView.ViewHolder{
         TextView name,number;
@@ -115,6 +82,37 @@ public class contactAdapter extends ListAdapter<contacts,contactAdapter.holder> 
             delete=itemView.findViewById(R.id.del);
             swipeLayout=itemView.findViewById(R.id.swipeL);
             edit=itemView.findViewById(R.id.edit);
+
+
+        }
+        void onbind(final int position){
+            name.setText(getItem(position).getContacts()+"  "+position);
+            number.setText(getItem(position).getNumber());
+
+            //delete button
+            delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    deleteContact.OnDelete(getItem(position));
+
+
+                }
+            });
+
+            //swipe layout
+            viewBinderHelper.bind(swipeLayout, String.valueOf(getItem(position).getId()));
+            viewBinderHelper.closeLayout(String.valueOf(getItem(position)));
+            viewBinderHelper.setOpenOnlyOne(true);
+
+            //edit button
+            edit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onContactClicked.onContact(getItem(position),position);
+
+                }
+            });
+
 
         }
     }
