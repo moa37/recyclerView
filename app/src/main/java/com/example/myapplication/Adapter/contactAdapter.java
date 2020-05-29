@@ -86,7 +86,7 @@ public class contactAdapter extends ListAdapter<contacts,contactAdapter.holder> 
 
         }
         void onbind(final int position){
-            name.setText(getItem(position).getContacts()+"  "+position);
+            name.setText(getItem(position).getContacts());
             number.setText(getItem(position).getNumber());
 
             //delete button
