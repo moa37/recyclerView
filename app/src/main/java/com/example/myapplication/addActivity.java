@@ -4,28 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextUtils;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
-import com.example.myapplication.Adapter.contactAdapter;
-import com.example.myapplication.Repository.AddContactRepository;
 //import com.example.myapplication.Repository.contactReopsitory;
-import com.example.myapplication.db.AppDatabase;
 import com.example.myapplication.model.contacts;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
-
-import java.io.Serializable;
-import java.util.List;
 
 public class addActivity extends AppCompatActivity {
     EditText name,number;

@@ -9,13 +9,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
-
 import com.example.myapplication.Adapter.contactAdapter;
-import com.example.myapplication.Repository.AddContactRepository;
 import com.example.myapplication.Repository.ContactExecutor;
-import com.example.myapplication.Repository.DeleteContactRepository;
-import com.example.myapplication.Repository.UpdateRepository;
 import com.example.myapplication.Repository.contactRepository;
 import com.example.myapplication.db.AppDatabase;
 import com.example.myapplication.model.contacts;
