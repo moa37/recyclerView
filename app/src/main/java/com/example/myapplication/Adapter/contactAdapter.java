@@ -48,7 +48,7 @@ public class contactAdapter extends ListAdapter<contacts,contactAdapter.holder> 
     }
 
     public interface OnContactClicked{
-        void onContact(contacts contact, int position);
+        void onContact(contacts item);
     }
 
     public interface OnDeleteContact{
@@ -65,7 +65,7 @@ public class contactAdapter extends ListAdapter<contacts,contactAdapter.holder> 
 
     @Override
     public void onBindViewHolder(@NonNull holder holder, final int position) {
-        holder.onbind(position);
+        holder.onbind(getItem(position));
     }
 
 
@@ -85,30 +85,30 @@ public class contactAdapter extends ListAdapter<contacts,contactAdapter.holder> 
 
 
         }
-        void onbind(final int position){
-            name.setText(getItem(position).getContacts());
-            number.setText(getItem(position).getNumber());
+        void onbind(final contacts item){
+            name.setText(item.getContacts());
+            number.setText(item.getNumber());
 
             //delete button
             delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    deleteContact.OnDelete(getItem(position));
+                    deleteContact.OnDelete(item);
 
 
                 }
             });
 
             //swipe layout
-            viewBinderHelper.bind(swipeLayout, String.valueOf(getItem(position).getId()));
-            viewBinderHelper.closeLayout(String.valueOf(getItem(position)));
+            viewBinderHelper.bind(swipeLayout, String.valueOf(item.getId()));
+            viewBinderHelper.closeLayout(String.valueOf(item));
             viewBinderHelper.setOpenOnlyOne(true);
 
             //edit button
             edit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onContactClicked.onContact(getItem(position),position);
+                    onContactClicked.onContact(item);
 
                 }
             });

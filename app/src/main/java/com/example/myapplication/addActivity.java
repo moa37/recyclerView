@@ -20,6 +20,7 @@ import com.example.myapplication.Repository.AddContactRepository;
 //import com.example.myapplication.Repository.contactReopsitory;
 import com.example.myapplication.db.AppDatabase;
 import com.example.myapplication.model.contacts;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -28,7 +29,7 @@ import java.util.List;
 
 public class addActivity extends AppCompatActivity {
     EditText name,number;
-    Button add;
+    FloatingActionButton add;
     boolean i=false;
     contacts cont;
     @Override
