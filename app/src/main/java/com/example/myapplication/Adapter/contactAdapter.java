@@ -37,7 +37,7 @@ public class contactAdapter extends ListAdapter<contacts,contactAdapter.holder> 
 
         @Override
         public boolean areContentsTheSame(@NonNull contacts oldItem, @NonNull contacts newItem) {
-            return oldItem.getContacts().equals(newItem.getContacts()) && oldItem.getNumber().equals(oldItem.getNumber());
+            return oldItem.getContacts().equals(newItem.getContacts()) && oldItem.getNumber().equals(newItem.getNumber());
         }
     };
 
